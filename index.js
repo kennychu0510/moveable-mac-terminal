@@ -91,8 +91,6 @@ class Mouse {
 
 const terminal = new Terminal(terminalInit)
 
-console.log(terminal.x, terminal.y)
-
 document.addEventListener('mousedown', e => {
   const {
     clientX: x,
