@@ -25,9 +25,22 @@ const COLOR = {
 }
 
 class Terminal {
+  headerHeight = 100
   constructor(init) {
-    const { x, y, width, height, radius } = init
-    Object.assign(this, { x, y, width, height, radius })
+    const {
+      x,
+      y,
+      width,
+      height,
+      radius
+    } = init
+    Object.assign(this, {
+      x,
+      y,
+      width,
+      height,
+      radius
+    })
   }
 
   draw() {
@@ -42,7 +55,7 @@ class Terminal {
       true
     )
     Draw.setColor(ctx, COLOR.headerBar)
-    Draw.topBar(ctx, this.x, this.y, this.width, 100, this.radius, true)
+    Draw.topBar(ctx, this.x, this.y, this.width, this.headerHeight, this.radius, true)
 
     Draw.buttons(ctx, this.x, this.y)
   }
@@ -51,6 +64,17 @@ class Terminal {
     this.x += moveX
     this.y += moveY
   }
+
+  mouseInHeader(clientX, clientY) {
+    const x = clientX * canvas.width / browserWidth
+    const y = clientY * canvas.height / browserHeight
+
+    if ((x < this.x + this.width && x > this.x) && (y < this.y + this.headerHeight && y > this.y)) {
+      return true
+    } 
+    return false
+  }
+
 }
 
 class Mouse {
@@ -67,33 +91,25 @@ class Mouse {
 
 const terminal = new Terminal(terminalInit)
 
-const mouse = new Mouse()
+console.log(terminal.x, terminal.y)
 
-document.addEventListener('keydown', (e) => {
-  const { key } = e
-  const keyMap = {
-    ArrowUp: 'up',
-    ArrowDown: 'down',
-    ArrowLeft: 'left',
-    ArrowRight: 'right',
-  }
-  switch (key) {
-    case 'ArrowUp':
-      terminal.y -= 10
-      break
-    case 'ArrowDown':
-      terminal.y += 10
-      break
-    case 'ArrowLeft':
-      terminal.x -= 10
-      break
-    case 'ArrowRight':
-      terminal.x += 10
-      break
+document.addEventListener('mousedown', e => {
+  const {
+    clientX: x,
+    clientY: y
+  } = e
+
+  if (terminal.mouseInHeader(x, y)) {
+    console.log('true')
+  } else {
+    console.log('false')
   }
 })
 
+const mouse = new Mouse()
+
 document.addEventListener('mousedown', (e) => {
+  if (!terminal.mouseInHeader(e.clientX, e.clientY)) return
   mouse.x = e.clientX
   mouse.y = e.clientY
 
@@ -111,8 +127,9 @@ document.addEventListener('mousedown', (e) => {
     'mouseup',
     (e) => {
       document.removeEventListener('mousemove', trackMouse)
-    },
-    { once: true }
+    }, {
+      once: true
+    }
   )
 })
 
