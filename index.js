@@ -77,4 +77,22 @@ function draw() {
   terminal.draw()
   requestAnimationFrame(draw)
 }
+
+document.addEventListener('keypress', e => {
+  const { key } = e
+  if (key === 'Enter') {
+    terminal.enterLine()
+    return
+  }
+
+  terminal.setText(key)
+})
+
+document.addEventListener('keydown', e => {
+  const { key } = e
+  if (key === 'Backspace') {
+    terminal.backspace()
+  }
+})
+
 draw()

@@ -196,9 +196,9 @@ export function buttons(ctx, x, y, drawDetails = false) {
   ctx.fill()
 }
 
-export function caret(ctx, x, y) {
+export function caret(ctx, x, y, color = null) {
   const arrowSize = 12
-  setColor(ctx, 'rgb(97,195,83)')
+  setColor(ctx, color ? color : 'rgb(97,195,83)')
   ctx.beginPath()
   ctx.moveTo(x, y)
   ctx.lineTo(x, y - arrowSize / 4)
@@ -218,6 +218,12 @@ export function caret(ctx, x, y) {
   ctx.arc(x + 70, y, r, Math.PI - 0.7, 0)
   ctx.arc(x + 70 + 2 * r, y, r, Math.PI, -0.7, true)
   ctx.stroke()
+}
+
+export function drawText(ctx, x, y, text) {
+  ctx.font = '60px Arial'
+  setColor(ctx, 'white')
+  ctx.fillText(text, x, y)
 }
 
 

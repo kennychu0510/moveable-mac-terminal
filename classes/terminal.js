@@ -8,8 +8,11 @@ const COLOR = {
 
 export class Terminal {
   headerHeight = 100
-  lineHeight = 40
+  textOffsetY = 80
+  lineHeight = 70
   showButtonDetails = false
+  history = []
+  text = ''
   constructor(init) {
     const {
       ctx,
@@ -49,7 +52,12 @@ export class Terminal {
     Canvas.setColor(this.ctx, COLOR.headerBar)
     Canvas.topBar(this.ctx, this.x, this.y, this.width, this.headerHeight, this.radius, true)
     Canvas.buttons(this.ctx, this.x, this.y, this.showButtonDetails)
-    Canvas.caret(this.ctx, this.x + 20, this.y + this.headerHeight + this.lineHeight)
+    for (let i = 0; i < this.history.length; i++) {
+      Canvas.caret(this.ctx, this.x + 20, this.y + this.textOffsetY + this.lineHeight + this.lineHeight * i, 'rgb(237,106,94)')
+      Canvas.drawText(this.ctx, this.x + 150, this.y + this.textOffsetY + this.lineHeight + this.lineHeight * i + 20, this.history[i])
+    }
+    Canvas.caret(this.ctx, this.x + 20, this.y + this.textOffsetY + this.lineHeight + this.lineHeight * this.history.length)
+    Canvas.drawText(this.ctx, this.x + 150, this.y + this.textOffsetY + this.lineHeight + this.lineHeight * this.history.length + 20, this.text)
   }
 
   move(moveX, moveY) {
@@ -104,7 +112,18 @@ export class Terminal {
       x,
       y
     } = this.convertClientPosToCanvas(clientX, clientY)
+  }
 
+  setText(text) {
+    this.text += text
+  }
 
+  enterLine() {
+    this.history.push(this.text)
+    this.text = ''
+  }
+
+  backspace() {
+    this.text = this.text.slice(0, -1)
   }
 }
