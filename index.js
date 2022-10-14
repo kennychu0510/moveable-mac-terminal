@@ -92,7 +92,17 @@ document.addEventListener('keydown', e => {
   const { key } = e
   if (key === 'Backspace') {
     terminal.backspace()
+    return
+  }
+  if (key === 'ArrowDown') {
+    terminal.scrollDown()
+    return
+  }
+  if (key === 'ArrowUp') {
+    terminal.scrollUp()
+    return
   }
 })
 
 draw()
+

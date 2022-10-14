@@ -220,10 +220,10 @@ export function caret(ctx, x, y, color = null) {
   ctx.stroke()
 }
 
-export function drawText(ctx, x, y, text) {
-  ctx.font = '60px Arial'
+export function drawText(ctx, x, y, text, max, fontSize) {
+  ctx.font = fontSize + 'px Arial'
   setColor(ctx, 'white')
-  ctx.fillText(text, x, y)
+  ctx.fillText(text, x, y, max)
 }
 
 

@@ -10,6 +10,8 @@ export class Terminal {
   headerHeight = 100
   textOffsetY = 80
   lineHeight = 70
+  fontSize = 60
+  lastLine = 0
   showButtonDetails = false
   history = []
   text = ''
@@ -36,6 +38,7 @@ export class Terminal {
       browserWidth,
       canvas
     })
+    this.maxLinesToShow = Math.floor((this.height - this.headerHeight - this.textOffsetY) / this.lineHeight)
   }
 
   draw() {
@@ -52,12 +55,13 @@ export class Terminal {
     Canvas.setColor(this.ctx, COLOR.headerBar)
     Canvas.topBar(this.ctx, this.x, this.y, this.width, this.headerHeight, this.radius, true)
     Canvas.buttons(this.ctx, this.x, this.y, this.showButtonDetails)
-    for (let i = 0; i < this.history.length; i++) {
+    const history = this.getHistoryToDisplay()
+    for (let i = 0; i < history.length; i++) {
       Canvas.caret(this.ctx, this.x + 20, this.y + this.textOffsetY + this.lineHeight + this.lineHeight * i, 'rgb(237,106,94)')
-      Canvas.drawText(this.ctx, this.x + 150, this.y + this.textOffsetY + this.lineHeight + this.lineHeight * i + 20, this.history[i])
+      Canvas.drawText(this.ctx, this.x + 150, this.y + this.textOffsetY + this.lineHeight + this.lineHeight * i + 20, history[i], this.width - 200, 50)
     }
-    Canvas.caret(this.ctx, this.x + 20, this.y + this.textOffsetY + this.lineHeight + this.lineHeight * this.history.length)
-    Canvas.drawText(this.ctx, this.x + 150, this.y + this.textOffsetY + this.lineHeight + this.lineHeight * this.history.length + 20, this.text)
+    Canvas.caret(this.ctx, this.x + 20, this.y + this.textOffsetY + this.lineHeight + this.lineHeight * history.length)
+    Canvas.drawText(this.ctx, this.x + 150, this.y + this.textOffsetY + this.lineHeight + this.lineHeight * history.length + 20, this.text, this.width - 200, 50)
   }
 
   move(moveX, moveY) {
@@ -119,11 +123,32 @@ export class Terminal {
   }
 
   enterLine() {
-    this.history.push(this.text)
+    if (this.text === 'clear()') {
+      this.history = []
+    } else {
+      this.history.push(this.text)
+    }
     this.text = ''
   }
 
   backspace() {
     this.text = this.text.slice(0, -1)
+  }
+
+  getHistoryToDisplay() {
+    if (this.lastLine > 0) {
+      return this.history.slice(-this.maxLinesToShow - this.lastLine, -this.lastLine)
+    }
+    return this.history.slice(-this.maxLinesToShow)
+  }
+
+  scrollUp() {
+    if ( this.history.length <= this.maxLinesToShow || this.lastLine === this.history.length - this.maxLinesToShow ) return
+    this.lastLine++
+  }
+
+  scrollDown() {
+    if (this.lastLine === 0) return
+    this.lastLine--
   }
 }
