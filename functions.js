@@ -71,7 +71,7 @@ export function topBar(
   height,
   radius = 5,
   fill = false,
-  stroke = true
+  stroke = true,
 ) {
   if (typeof radius === 'number') {
     radius = {
@@ -112,7 +112,7 @@ export function topBar(
   ctx.fillText('Terminal', x + width / 2 - 100, y + 75, 200)
 }
 
-export function buttons(ctx, x, y) {
+export function buttons(ctx, x, y, drawDetails = false) {
   const red = 'rgb(237,106,94)'
   const cross = 'rgb(142,27,18)'
   const yellow = 'rgb(245,191,79)'
@@ -139,6 +139,20 @@ export function buttons(ctx, x, y) {
   ctx.beginPath()
   ctx.arc(redButton.x, redButton.y, r, 0, 2 * Math.PI)
   ctx.fill()
+  
+  // yellow button
+  setColor(ctx, yellow)
+  ctx.beginPath()
+  ctx.arc(yellowButton.x, yellowButton.y, r, 0, 2 * Math.PI)
+  ctx.fill()
+
+  // green button
+  setColor(ctx, green)
+  ctx.beginPath()
+  ctx.arc(greenButton.x, greenButton.y, r, 0, 2 * Math.PI)
+  ctx.fill()
+
+  if (!drawDetails) return
 
   // red cross
   setColor(ctx, cross)
@@ -153,12 +167,6 @@ export function buttons(ctx, x, y) {
   ctx.lineTo(redButton.x - crossOffset, redButton.y + crossOffset);
   ctx.stroke();
 
-  // yellow button
-  setColor(ctx, yellow)
-  ctx.beginPath()
-  ctx.arc(yellowButton.x, yellowButton.y, r, 0, 2 * Math.PI)
-  ctx.fill()
-  
   // yellow slash
   setColor(ctx, dash)
   ctx.lineWidth = 6
@@ -167,12 +175,6 @@ export function buttons(ctx, x, y) {
   ctx.moveTo(yellowButton.x - dashOffset, yellowButton.y)
   ctx.lineTo(yellowButton.x + dashOffset, yellowButton.y)
   ctx.stroke()
-
-  // green button
-  setColor(ctx, green)
-  ctx.beginPath()
-  ctx.arc(greenButton.x, greenButton.y, r, 0, 2 * Math.PI)
-  ctx.fill()
 
   // green expander
   setColor(ctx, expander)

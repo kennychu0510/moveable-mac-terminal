@@ -3,7 +3,8 @@ const ctx = canvas.getContext('2d')
 const background = new Image()
 background.src = './background.jpg'
 
-import * as Canvas from './functions.js'
+import { Terminal } from './classes/terminal.js'
+import { Mouse } from './classes/mouse.js'
 
 const browserWidth = canvas.clientWidth
 const browserHeight = canvas.clientHeight
@@ -12,6 +13,7 @@ canvas.width = background.width
 canvas.height = background.height
 
 const terminalInit = {
+  ctx,
   x: canvas.width / 2 - (canvas.width * 0.4) / 2,
   y: canvas.height / 2 - (canvas.height * 0.5) / 2,
   width: canvas.width * 0.4,
@@ -19,78 +21,10 @@ const terminalInit = {
   radius: (canvas.width * 0.4) / 40,
 }
 
-const COLOR = {
-  headerBar: 'rgb(44,39,50)',
-  terminalBackground: 'rgb(30,30,30)',
-  text: 'rgb(180,177,184)'
-}
-
-class Terminal {
-  headerHeight = 100
-  constructor(init) {
-    const {
-      x,
-      y,
-      width,
-      height,
-      radius
-    } = init
-    Object.assign(this, {
-      x,
-      y,
-      width,
-      height,
-      radius
-    })
-  }
-
-  draw() {
-    Canvas.setColor(ctx, COLOR.terminalBackground)
-    Canvas.roundRect(
-      ctx,
-      this.x,
-      this.y,
-      this.width,
-      this.height,
-      this.radius,
-      true
-    )
-    Canvas.setColor(ctx, COLOR.headerBar)
-    Canvas.topBar(ctx, this.x, this.y, this.width, this.headerHeight, this.radius, true)
-
-    Canvas.buttons(ctx, this.x, this.y)
-  }
-
-  move(moveX, moveY) {
-    this.x += moveX
-    this.y += moveY
-  }
-
-  mouseInHeader(clientX, clientY) {
-    const x = clientX * canvas.width / browserWidth
-    const y = clientY * canvas.height / browserHeight
-
-    if ((x < this.x + this.width && x > this.x) && (y < this.y + this.headerHeight && y > this.y)) {
-      return true
-    } 
-    return false
-  }
-
-}
-
-class Mouse {
-  constructor() {
-    this.x = 0
-    this.y = 0
-  }
-
-  update(x, y) {
-    this.x = x
-    this.y = y
-  }
-}
 
 const terminal = new Terminal(terminalInit)
+const mouse = new Mouse()
+
 
 document.addEventListener('mousedown', e => {
   const {
@@ -105,7 +39,6 @@ document.addEventListener('mousedown', e => {
   }
 })
 
-const mouse = new Mouse()
 
 document.addEventListener('mousedown', (e) => {
   if (!terminal.mouseInHeader(e.clientX, e.clientY)) return
@@ -130,6 +63,10 @@ document.addEventListener('mousedown', (e) => {
       once: true
     }
   )
+})
+
+document.addEventListener('mousemove', e => {
+  terminal.mouseInButtons(e.clientX, e.clientY)
 })
 
 function draw() {
