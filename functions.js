@@ -114,23 +114,83 @@ export function topBar(
 
 export function buttons(ctx, x, y) {
   const red = 'rgb(237,106,94)'
+  const cross = 'rgb(142,27,18)'
   const yellow = 'rgb(245,191,79)'
+  const dash = 'rgb(169,114,41)'
   const green = 'rgb(97,195,83)'
+  const expander = 'rgb(54,119,37)'
   const r = 22
-  
+
+  const redButton = {
+    x: x + 50,
+    y: y + 50
+  }
+  const yellowButton = {
+    x: x + 120,
+    y: y + 50
+  }
+
+  const greenButton = {
+    x: x + 190,
+    y: y + 50
+  }
+  // red button
   setColor(ctx, red)
   ctx.beginPath()
-  ctx.arc(x + 50, y + 50, r, 0, 2 * Math.PI)
-  ctx.fill()
-  
-  setColor(ctx, yellow)
-  ctx.beginPath()
-  ctx.arc(x + 120, y + 50, r, 0, 2 * Math.PI)
+  ctx.arc(redButton.x, redButton.y, r, 0, 2 * Math.PI)
   ctx.fill()
 
+  // red cross
+  setColor(ctx, cross)
+  ctx.lineWidth = 4
+  const crossOffset = 11
+  ctx.beginPath();
+
+  ctx.moveTo(redButton.x - crossOffset, redButton.y - crossOffset);
+  ctx.lineTo(redButton.x + crossOffset, redButton.y + crossOffset);
+
+  ctx.moveTo(redButton.x + crossOffset, redButton.y - crossOffset);
+  ctx.lineTo(redButton.x - crossOffset, redButton.y + crossOffset);
+  ctx.stroke();
+
+  // yellow button
+  setColor(ctx, yellow)
+  ctx.beginPath()
+  ctx.arc(yellowButton.x, yellowButton.y, r, 0, 2 * Math.PI)
+  ctx.fill()
+  
+  // yellow slash
+  setColor(ctx, dash)
+  ctx.lineWidth = 6
+  const dashOffset = 15
+  ctx.beginPath()
+  ctx.moveTo(yellowButton.x - dashOffset, yellowButton.y)
+  ctx.lineTo(yellowButton.x + dashOffset, yellowButton.y)
+  ctx.stroke()
+
+  // green button
   setColor(ctx, green)
   ctx.beginPath()
-  ctx.arc(x + 190, y + 50, r, 0, 2 * Math.PI)
+  ctx.arc(greenButton.x, greenButton.y, r, 0, 2 * Math.PI)
+  ctx.fill()
+
+  // green expander
+  setColor(ctx, expander)
+  const expanderOffset = 10
+  const gap = 3
+  ctx.beginPath()
+  ctx.moveTo(greenButton.x - expanderOffset - gap, greenButton.y + expanderOffset - gap)
+  ctx.lineTo(greenButton.x - expanderOffset - gap, greenButton.y - expanderOffset - gap)
+  ctx.lineTo(greenButton.x + expanderOffset - gap, greenButton.y - expanderOffset - gap)
+  ctx.closePath()
+  ctx.fill()
+  
+  ctx.beginPath()
+  ctx.moveTo(greenButton.x + expanderOffset + gap, greenButton.y - expanderOffset + gap)
+  ctx.lineTo(greenButton.x + expanderOffset + gap, greenButton.y + expanderOffset + gap)
+  ctx.lineTo(greenButton.x - expanderOffset + gap, greenButton.y + expanderOffset + gap)
+  ctx.closePath()
+
   ctx.fill()
 }
 

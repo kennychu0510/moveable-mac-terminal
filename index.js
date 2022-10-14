@@ -1,8 +1,9 @@
 const canvas = document.querySelector('#canvas')
 const ctx = canvas.getContext('2d')
-const background = document.querySelector('img')
+const background = new Image()
+background.src = './background.jpg'
 
-import * as Draw from './functions.js'
+import * as Canvas from './functions.js'
 
 const browserWidth = canvas.clientWidth
 const browserHeight = canvas.clientHeight
@@ -44,8 +45,8 @@ class Terminal {
   }
 
   draw() {
-    Draw.setColor(ctx, COLOR.terminalBackground)
-    Draw.roundRect(
+    Canvas.setColor(ctx, COLOR.terminalBackground)
+    Canvas.roundRect(
       ctx,
       this.x,
       this.y,
@@ -54,10 +55,10 @@ class Terminal {
       this.radius,
       true
     )
-    Draw.setColor(ctx, COLOR.headerBar)
-    Draw.topBar(ctx, this.x, this.y, this.width, this.headerHeight, this.radius, true)
+    Canvas.setColor(ctx, COLOR.headerBar)
+    Canvas.topBar(ctx, this.x, this.y, this.width, this.headerHeight, this.radius, true)
 
-    Draw.buttons(ctx, this.x, this.y)
+    Canvas.buttons(ctx, this.x, this.y)
   }
 
   move(moveX, moveY) {

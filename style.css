@@ -3,11 +3,6 @@ body {
   overflow-y: hidden;
 }
 
-img {
-  display: none;
-  /* width: 100%; */
-}
-
 #canvas {
   height: 100vh;
   width: 100%;
