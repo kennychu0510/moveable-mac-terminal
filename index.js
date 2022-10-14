@@ -3,8 +3,12 @@ const ctx = canvas.getContext('2d')
 const background = new Image()
 background.src = './background.jpg'
 
-import { Terminal } from './classes/terminal.js'
-import { Mouse } from './classes/mouse.js'
+import {
+  Terminal
+} from './classes/terminal.js'
+import {
+  Mouse
+} from './classes/mouse.js'
 
 const browserWidth = canvas.clientWidth
 const browserHeight = canvas.clientHeight
@@ -44,16 +48,62 @@ const mouse = new Mouse()
 
 
 document.addEventListener('mousedown', (e) => {
-  if (!terminal.mouseInHeader(e.clientX, e.clientY)) return
-  mouse.x = e.clientX
-  mouse.y = e.clientY
+
+  // mouse.x = e.clientX
+  // mouse.y = e.clientY
+
+  const {
+    x,
+    y
+  } = convertClientPosToCanvas(e.clientX, e.clientY)
+  let resizingMode = false
+  let movingHeader = false
+
+  if (terminal.mouseInHeader(x, y)) {
+    movingHeader = true
+  }
+
+  if (terminal.mouseOnEdge(x, y)) {
+    terminal.resizeMode = true
+    if (terminal.mouseOnLeftEdge(x)) {
+      resizingMode = 'left'
+      terminal.changeCursor('col-resize')
+    } else if (terminal.mouseOnRightEdge(x)) {
+      resizingMode = 'right'
+      terminal.changeCursor('col-resize')
+    } else if (terminal.mouseOnTopEdge(y)) {
+      resizingMode = 'top'
+      terminal.changeCursor('row-resize')
+    } else if (terminal.mouseOnBotEdge(y)) {
+      resizingMode = 'bot'
+      terminal.changeCursor('row-resize')
+    }
+  }
+
 
   const trackMouse = (e) => {
     const moveX = (e.movementX * canvas.width) / browserWidth
     const moveY = (e.movementY * canvas.height) / browserHeight
 
-    terminal.move(moveX, moveY)
-    mouse.update(mouse.x, mouse.y)
+    switch (resizingMode) {
+      case 'left':
+        terminal.updateWidthLeft(moveX)
+        return;
+      case 'right':
+        terminal.updateWidthRight(moveX)
+        return;
+      case 'top':
+        terminal.updateHeightTop(moveY)
+        return;
+      case 'bot':
+        terminal.updateHeightBot(moveY)
+        return;
+    }
+
+    if (movingHeader) {
+      terminal.move(moveX, moveY)
+    }
+    // mouse.update(mouse.x, mouse.y)
   }
 
   document.addEventListener('mousemove', trackMouse)
@@ -62,6 +112,9 @@ document.addEventListener('mousedown', (e) => {
     'mouseup',
     (e) => {
       document.removeEventListener('mousemove', trackMouse)
+      movingHeader = false
+      resizingMode = false
+      terminal.resetState()
     }, {
       once: true
     }
@@ -69,7 +122,12 @@ document.addEventListener('mousedown', (e) => {
 })
 
 document.addEventListener('mousemove', e => {
-  terminal.mouseInButtons(e.clientX, e.clientY)
+  const {
+    x,
+    y
+  } = convertClientPosToCanvas(e.clientX, e.clientY)
+  terminal.mouseInButtons(x, y)
+  terminal.mouseOnEdge(x, y)
 })
 
 function draw() {
@@ -79,7 +137,9 @@ function draw() {
 }
 
 document.addEventListener('keypress', e => {
-  const { key } = e
+  const {
+    key
+  } = e
   if (key === 'Enter') {
     terminal.enterLine()
     return
@@ -89,7 +149,9 @@ document.addEventListener('keypress', e => {
 })
 
 document.addEventListener('keydown', e => {
-  const { key } = e
+  const {
+    key
+  } = e
   if (key === 'Backspace') {
     terminal.backspace()
     return
@@ -106,3 +168,12 @@ document.addEventListener('keydown', e => {
 
 draw()
 
+function convertClientPosToCanvas(clientX, clientY) {
+  const x = clientX * canvas.width / browserWidth
+  const y = clientY * canvas.height / browserHeight
+
+  return {
+    x,
+    y
+  }
+}

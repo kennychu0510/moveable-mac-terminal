@@ -15,6 +15,9 @@ export class Terminal {
   showButtonDetails = false
   history = []
   text = ''
+  resizeMode = false
+  minWidth = 500
+  minHeight = 500
   constructor(init) {
     const {
       ctx,
@@ -69,12 +72,25 @@ export class Terminal {
     this.y += moveY
   }
 
-  mouseInHeader(clientX, clientY) {
-    const {
-      x,
-      y
-    } = this.convertClientPosToCanvas(clientX, clientY)
+  updateWidthLeft(moveX) {
+    this.x += moveX
+    const newWidth = this.width - moveX
+  }
 
+  updateWidthRight(moveX) {
+    this.width += moveX
+  }
+
+  updateHeightTop(moveY) {
+    this.y += moveY
+    this.height -= moveY
+  }
+
+  updateHeightBot(moveY) {
+    this.height += moveY
+  }
+
+  mouseInHeader(x, y) {
     if ((x < this.x + this.width && x > this.x) && (y < this.y + this.headerHeight && y > this.y)) {
       return true
     }
@@ -82,19 +98,44 @@ export class Terminal {
     return false
   }
 
-  mouseInButtons(clientX, clientY) {
-    const {
-      x,
-      y
-    } = this.convertClientPosToCanvas(clientX, clientY)
-
+  mouseInButtons(x, y) {
     if ((x < this.x + 200 && x > this.x) && (y < this.y + this.headerHeight && y > this.y)) {
       this.showButtonDetails = true
       this.changeCursor('pointer')
       return
     }
     this.showButtonDetails = false
-    this.changeCursor('initial')
+    if (!this.resizeMode) {
+      this.changeCursor('initial')
+    }
+  }
+
+  mouseOnEdge(x, y) {
+    if ((this.mouseOnLeftEdge(x) || this.mouseOnRightEdge(x)) && (y < this.y + this.height && y > this.y)) {
+      this.changeCursor('col-resize')
+      return true
+    } 
+    if ((this.mouseOnTopEdge(y) || this.mouseOnBotEdge(y)) && (x < this.x + this.width && x > this.x)) {
+      this.changeCursor('row-resize')
+      return true
+    } 
+    return false
+  }
+
+  mouseOnLeftEdge(x) {
+    return (x < this.x + 2 && x > this.x - 2)
+  }
+
+  mouseOnRightEdge(x) {
+    return x < this.x + this.width + 2 && x > this.x + this.width - 2
+  }
+
+  mouseOnTopEdge(y) {
+    return y < this.y + 2 && y > this.y - 2
+  }
+
+  mouseOnBotEdge(y) {
+    return y < this.y + this.height + 2 && y > this.y + this.height - 2
   }
 
   convertClientPosToCanvas(clientX, clientY) {
@@ -111,11 +152,7 @@ export class Terminal {
     this.canvas.style.cursor = style
   }
 
-  detectRedButtonClick(clientX, clientY) {
-    const {
-      x,
-      y
-    } = this.convertClientPosToCanvas(clientX, clientY)
+  detectRedButtonClick(x, y) {
   }
 
   setText(text) {
@@ -150,5 +187,11 @@ export class Terminal {
   scrollDown() {
     if (this.lastLine === 0) return
     this.lastLine--
+  }
+
+  resetState() {
+    this.changeCursor('initial')
+    this.resizeMode = false
+    this.maxLinesToShow = Math.floor((this.height - this.headerHeight - this.textOffsetY) / this.lineHeight)
   }
 }
