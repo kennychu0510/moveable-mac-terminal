@@ -139,7 +139,7 @@ export function buttons(ctx, x, y, drawDetails = false) {
   ctx.beginPath()
   ctx.arc(redButton.x, redButton.y, r, 0, 2 * Math.PI)
   ctx.fill()
-  
+
   // yellow button
   setColor(ctx, yellow)
   ctx.beginPath()
@@ -186,7 +186,7 @@ export function buttons(ctx, x, y, drawDetails = false) {
   ctx.lineTo(greenButton.x + expanderOffset - gap, greenButton.y - expanderOffset - gap)
   ctx.closePath()
   ctx.fill()
-  
+
   ctx.beginPath()
   ctx.moveTo(greenButton.x + expanderOffset + gap, greenButton.y - expanderOffset + gap)
   ctx.lineTo(greenButton.x + expanderOffset + gap, greenButton.y + expanderOffset + gap)
@@ -194,6 +194,30 @@ export function buttons(ctx, x, y, drawDetails = false) {
   ctx.closePath()
 
   ctx.fill()
+}
+
+export function caret(ctx, x, y) {
+  const arrowSize = 12
+  setColor(ctx, 'rgb(97,195,83)')
+  ctx.beginPath()
+  ctx.moveTo(x, y)
+  ctx.lineTo(x, y - arrowSize / 4)
+  ctx.lineTo(x + arrowSize, y - arrowSize / 4)
+  ctx.lineTo(x + arrowSize, y - arrowSize)
+  ctx.lineTo(x + 2 * arrowSize, y)
+  ctx.lineTo(x + arrowSize, y + arrowSize)
+  ctx.lineTo(x + arrowSize, y + arrowSize / 4)
+  ctx.lineTo(x, y + arrowSize / 4)
+  ctx.closePath()
+  ctx.fill()
+
+  setColor(ctx, 'rgb(105,194,207)')
+  ctx.lineWidth = 7
+  const r = 4
+  ctx.beginPath()
+  ctx.arc(x + 70, y, r, Math.PI - 0.7, 0)
+  ctx.arc(x + 70 + 2 * r, y, r, Math.PI, -0.7, true)
+  ctx.stroke()
 }
 
 

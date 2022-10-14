@@ -8,6 +8,7 @@ const COLOR = {
 
 export class Terminal {
   headerHeight = 100
+  lineHeight = 40
   showButtonDetails = false
   constructor(init) {
     const {
@@ -16,7 +17,10 @@ export class Terminal {
       y,
       width,
       height,
-      radius
+      radius,
+      browserHeight,
+      browserWidth,
+      canvas
     } = init
     Object.assign(this, {
       ctx,
@@ -24,7 +28,10 @@ export class Terminal {
       y,
       width,
       height,
-      radius
+      radius,
+      browserHeight,
+      browserWidth,
+      canvas
     })
   }
 
@@ -42,6 +49,7 @@ export class Terminal {
     Canvas.setColor(this.ctx, COLOR.headerBar)
     Canvas.topBar(this.ctx, this.x, this.y, this.width, this.headerHeight, this.radius, true)
     Canvas.buttons(this.ctx, this.x, this.y, this.showButtonDetails)
+    Canvas.caret(this.ctx, this.x + 20, this.y + this.headerHeight + this.lineHeight)
   }
 
   move(moveX, moveY) {
@@ -78,8 +86,8 @@ export class Terminal {
   }
 
   convertClientPosToCanvas(clientX, clientY) {
-    const x = clientX * canvas.width / browserWidth
-    const y = clientY * canvas.height / browserHeight
+    const x = clientX * this.canvas.width / this.browserWidth
+    const y = clientY * this.canvas.height / this.browserHeight
 
     return {
       x,
@@ -88,6 +96,15 @@ export class Terminal {
   }
 
   changeCursor(style) {
-    canvas.style.cursor = style
+    this.canvas.style.cursor = style
+  }
+
+  detectRedButtonClick(clientX, clientY) {
+    const {
+      x,
+      y
+    } = this.convertClientPosToCanvas(clientX, clientY)
+
+
   }
 }

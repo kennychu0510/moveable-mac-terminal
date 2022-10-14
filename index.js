@@ -19,6 +19,9 @@ const terminalInit = {
   width: canvas.width * 0.4,
   height: canvas.height * 0.5,
   radius: (canvas.width * 0.4) / 40,
+  canvas,
+  browserWidth,
+  browserHeight
 }
 
 
@@ -26,18 +29,18 @@ const terminal = new Terminal(terminalInit)
 const mouse = new Mouse()
 
 
-document.addEventListener('mousedown', e => {
-  const {
-    clientX: x,
-    clientY: y
-  } = e
+// document.addEventListener('mousedown', e => {
+//   const {
+//     clientX: x,
+//     clientY: y
+//   } = e
 
-  if (terminal.mouseInHeader(x, y)) {
-    console.log('true')
-  } else {
-    console.log('false')
-  }
-})
+//   if (terminal.mouseInHeader(x, y)) {
+//     console.log('true')
+//   } else {
+//     console.log('false')
+//   }
+// })
 
 
 document.addEventListener('mousedown', (e) => {
