@@ -74,7 +74,7 @@ export class Terminal {
 
   updateWidthLeft(moveX) {
     this.x += moveX
-    const newWidth = this.width - moveX
+    this.width -= moveX
   }
 
   updateWidthRight(moveX) {
